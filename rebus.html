@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="theme-color" content="#ff6b6b">
+    <meta name="referrer" content="strict-origin-when-cross-origin">
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🔐</text></svg>">
     <title>Rozwiąż rebus!</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -246,7 +247,7 @@
         overlay.classList.add('open');
 
         // Standard YouTube embed (no JS API = no error 153)
-        overlay.innerHTML = '<iframe src="https://www.youtube.com/embed/wF5RuUPrdXg?si=d0fh_9mDFkqaL5_A&autoplay=1&start=0&end=24" title="YouTube video player" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>';
+        overlay.innerHTML = '<iframe src="https://www.youtube-nocookie.com/embed/wF5RuUPrdXg?autoplay=1&start=0&end=24" title="YouTube video player" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>';
 
         // Fade out from 20s to 24s (timer-based since no JS API control)
         setTimeout(() => {
