@@ -201,8 +201,10 @@
         <div class="error-msg" id="errorMsg"></div>
     </div>
 
-    <!-- Video overlay -->
-    <div class="video-overlay" id="videoOverlay"></div>
+    <!-- Video overlay: iframe in DOM from start so referrer is correct -->
+    <div class="video-overlay" id="videoOverlay">
+        <iframe id="ytFrame" src="about:blank" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+    </div>
 
     <script>
     const HASH_1 = 'ae851eaa05b559f247142f0d3b3b38e2302d6f81f1fa96344af59aede40eff22';
@@ -244,12 +246,13 @@
     // ===== VIDEO =====
     function launchVideo() {
         const overlay = document.getElementById('videoOverlay');
+        const frame = document.getElementById('ytFrame');
+
+        // Set src with autoplay (iframe already in DOM = proper referrer)
+        frame.src = 'https://www.youtube.com/embed/wF5RuUPrdXg?si=optFc0z_PKYWOzwh&autoplay=1&start=0&end=24';
         overlay.classList.add('open');
 
-        // Standard YouTube embed (no JS API = no error 153)
-        overlay.innerHTML = '<iframe src="https://www.youtube-nocookie.com/embed/wF5RuUPrdXg?autoplay=1&start=0&end=24" title="YouTube video player" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>';
-
-        // Fade out from 20s to 24s (timer-based since no JS API control)
+        // Fade out from 20s to 24s
         setTimeout(() => {
             overlay.style.opacity = '0';
         }, 20000);
