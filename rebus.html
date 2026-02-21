@@ -13,8 +13,8 @@
         * { margin: 0; padding: 0; box-sizing: border-box; }
 
         html, body {
-            overscroll-behavior: none;
             overflow-x: hidden;
+            height: 100%;
         }
 
         body {
@@ -24,7 +24,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            padding: 24px;
+            padding: 16px;
             -webkit-tap-highlight-color: transparent;
         }
 
@@ -33,123 +33,65 @@
             backdrop-filter: blur(12px);
             -webkit-backdrop-filter: blur(12px);
             border-radius: 28px;
-            padding: 32px 24px;
-            max-width: 400px;
-            width: 100%;
+            padding: 40px 28px;
+            width: 85%;
+            max-width: 520px;
+            min-height: 85vh;
             text-align: center;
             box-shadow: 0 8px 40px rgba(0,0,0,0.08);
-        }
-
-        .card-title {
-            font-size: 1.5rem;
-            font-weight: 800;
-            color: #d63384;
-            margin-bottom: 6px;
-        }
-
-        .card-sub {
-            font-size: 0.9rem;
-            color: #888;
-            font-weight: 600;
-            margin-bottom: 28px;
-        }
-
-        /* ===== REBUS SECTION ===== */
-        .rebus-section {
-            margin-bottom: 24px;
-        }
-
-        .rebus-label {
-            font-size: 0.75rem;
-            font-weight: 700;
-            color: #aaa;
-            text-transform: uppercase;
-            letter-spacing: 0.1em;
-            margin-bottom: 10px;
-        }
-
-        .rebus-row {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-            margin-bottom: 14px;
-            flex-wrap: wrap;
-        }
-
-        .rebus-item {
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 2px;
+            justify-content: center;
         }
 
-        .rebus-symbol {
-            font-size: 2.8rem;
-            line-height: 1;
+        .card-title { font-size: 2rem; font-weight: 800; color: #d63384; margin-bottom: 8px; }
+        .card-sub { font-size: 1.1rem; color: #888; font-weight: 600; margin-bottom: 36px; }
+
+        .rebus-section { margin-bottom: 28px; width: 100%; }
+        .rebus-label { font-size: 0.9rem; font-weight: 700; color: #aaa; text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 14px; }
+        .rebus-row { display: flex; align-items: center; justify-content: center; gap: 16px; margin-bottom: 18px; flex-wrap: wrap; }
+        .rebus-item { display: flex; flex-direction: column; align-items: center; gap: 4px; }
+        .rebus-symbol { font-size: 3.5rem; line-height: 1; }
+        .rebus-hint { font-size: 0.75rem; color: #bbb; font-weight: 600; }
+        .rebus-op { font-size: 2.8rem; font-weight: 800; color: #d63384; line-height: 1; }
+
+        .chrobry-text {
+            font-family: 'Times New Roman', Georgia, serif;
+            font-size: 3.2rem;
+            font-weight: bold;
+            color: #8B6914;
+            text-shadow: 0 2px 6px rgba(139,105,20,0.3);
+            letter-spacing: 1px;
         }
 
-        .rebus-hint {
-            font-size: 0.6rem;
-            color: #bbb;
-            font-weight: 600;
+        .roman-x {
+            font-family: 'Times New Roman', Georgia, serif;
+            font-size: 3.8rem;
+            font-weight: bold;
+            font-style: italic;
+            color: #555;
         }
 
-        .rebus-op {
-            font-size: 2rem;
-            font-weight: 800;
-            color: #d63384;
-            line-height: 1;
+        .barbie-logo {
+            font-family: 'Brush Script MT', 'Segoe Script', 'Dancing Script', cursive;
+            color: #e0218a;
+            font-size: 3.4rem;
+            font-weight: bold;
+            text-shadow: 0 2px 8px rgba(224,33,138,0.3);
+            letter-spacing: 1px;
         }
 
-        .rebus-equals {
-            font-size: 1.5rem;
-            font-weight: 800;
-            color: #999;
-            margin: 4px 0;
-        }
-
-        /* ===== INPUT ===== */
-        .input-group {
-            margin-bottom: 16px;
-        }
-
-        .input-group label {
-            display: block;
-            font-size: 0.75rem;
-            font-weight: 700;
-            color: #999;
-            text-align: left;
-            margin-bottom: 4px;
-            padding-left: 4px;
-        }
-
+        .input-group { margin-bottom: 20px; width: 100%; max-width: 380px; margin-left: auto; margin-right: auto; }
+        .input-group label { display: block; font-size: 0.85rem; font-weight: 700; color: #999; text-align: left; margin-bottom: 6px; padding-left: 4px; }
         .input-group input {
-            width: 100%;
-            padding: 14px 16px;
-            border: 2px solid #eee;
-            border-radius: 14px;
-            font-family: 'Quicksand', sans-serif;
-            font-size: 1.1rem;
-            font-weight: 700;
-            color: #333;
-            outline: none;
-            transition: border-color 0.2s;
-            background: rgba(255,255,255,0.8);
+            width: 100%; padding: 16px 18px; border: 2px solid #eee; border-radius: 14px;
+            font-family: 'Quicksand', sans-serif; font-size: 1.2rem; font-weight: 700; color: #333;
+            outline: none; transition: border-color 0.2s; background: rgba(255,255,255,0.8);
         }
-
-        .input-group input:focus {
-            border-color: #d63384;
-        }
-
-        .input-group input.error {
-            border-color: #ef5350;
-            animation: shake 0.4s ease;
-        }
-
-        .input-group input.success {
-            border-color: #4caf50;
-        }
+        .input-group input:focus { border-color: #d63384; }
+        .input-group input.error { border-color: #ef5350; animation: shake 0.4s ease; }
+        .input-group input.success { border-color: #4caf50; }
 
         @keyframes shake {
             0%, 100% { transform: translateX(0); }
@@ -159,46 +101,17 @@
         }
 
         .btn-check {
-            display: inline-block;
-            padding: 14px 40px;
-            border-radius: 50px;
-            border: none;
-            background: linear-gradient(135deg, #d63384, #f06292);
-            color: white;
-            font-family: 'Quicksand', sans-serif;
-            font-size: 1.1rem;
-            font-weight: 800;
-            cursor: pointer;
-            margin-top: 8px;
-            transition: transform 0.15s, box-shadow 0.15s;
+            display: inline-block; padding: 16px 48px; border-radius: 50px; border: none;
+            background: linear-gradient(135deg, #d63384, #f06292); color: white;
+            font-family: 'Quicksand', sans-serif; font-size: 1.2rem; font-weight: 800;
+            cursor: pointer; margin-top: 12px; transition: transform 0.15s;
             box-shadow: 0 4px 15px rgba(214,51,132,0.3);
         }
+        .btn-check:active { transform: scale(0.95); }
 
-        .btn-check:active {
-            transform: scale(0.95);
-        }
+        .error-msg { color: #ef5350; font-size: 0.95rem; font-weight: 700; margin-top: 14px; min-height: 1.2em; }
 
-        .btn-check:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-        }
-
-        .error-msg {
-            color: #ef5350;
-            font-size: 0.85rem;
-            font-weight: 700;
-            margin-top: 12px;
-            min-height: 1.2em;
-        }
-
-        /* ===== DIVIDER ===== */
-        .divider {
-            width: 60px;
-            height: 3px;
-            background: linear-gradient(90deg, #d63384, #f06292);
-            border-radius: 3px;
-            margin: 20px auto;
-        }
+        .divider { width: 80px; height: 3px; background: linear-gradient(90deg, #d63384, #f06292); border-radius: 3px; margin: 24px auto; }
 
         /* ===== SUCCESS OVERLAY ===== */
         .success-overlay {
@@ -206,57 +119,61 @@
             position: fixed;
             inset: 0;
             background: rgba(0,0,0,0.85);
-            z-index: 100;
+            z-index: 500;
             align-items: center;
             justify-content: center;
             flex-direction: column;
-            color: white;
-            text-align: center;
-            padding: 24px;
+            gap: 20px;
         }
-
         .success-overlay.open { display: flex; }
-
-        .success-overlay .big-emoji {
-            font-size: 5rem;
-            animation: success-bounce 0.6s ease infinite alternate;
-        }
-
-        @keyframes success-bounce {
-            from { transform: scale(1) rotate(-3deg); }
-            to { transform: scale(1.1) rotate(3deg); }
-        }
-
-        .success-overlay h2 {
+        .success-msg {
+            color: white;
             font-family: 'Quicksand', sans-serif;
-            font-size: 2rem;
-            margin-top: 16px;
+            font-size: 1.6rem;
+            font-weight: 800;
+            text-align: center;
+            padding: 0 20px;
+            animation: fadeInUp 0.8s ease;
         }
-
-        .success-overlay p {
+        .success-sub {
+            color: rgba(255,255,255,0.7);
             font-family: 'Quicksand', sans-serif;
             font-size: 1rem;
-            opacity: 0.8;
-            margin-top: 8px;
+            font-weight: 600;
+            animation: fadeInUp 1.2s ease;
         }
 
-        /* Confetti reuse */
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* ===== CONFETTI ===== */
         .confetti-piece {
-            position: fixed;
-            top: -20px;
-            z-index: 150;
-            pointer-events: none;
+            position: fixed; top: -20px; z-index: 600; pointer-events: none;
             animation: confetti-fall linear forwards;
         }
-
         @keyframes confetti-fall {
             to { transform: translateY(110vh) rotate(1080deg); opacity: 0; }
+        }
+
+        @media (max-width: 480px) {
+            .card {
+                width: 92%;
+                padding: 28px 18px;
+                min-height: 80vh;
+            }
+            .card-title { font-size: 1.7rem; }
+            .chrobry-text { font-size: 2.6rem; }
+            .roman-x { font-size: 3rem; }
+            .barbie-logo { font-size: 2.8rem; }
+            .rebus-op { font-size: 2.2rem; }
         }
     </style>
 </head>
 <body>
 
-    <div class="card">
+    <div class="card" id="card">
         <div class="card-title">🔐 Rozwiąż rebus!</div>
         <div class="card-sub">Odgadnij dwa słowa, żeby odblokować prezent</div>
 
@@ -265,13 +182,12 @@
             <div class="rebus-label">Słowo 1</div>
             <div class="rebus-row">
                 <div class="rebus-item">
-                    <div class="rebus-symbol">👑</div>
-                    <div class="rebus-hint">banknot 20zł</div>
+                    <div class="chrobry-text">Chrobry</div>
+                    <div class="rebus-hint">co reprezentuje?</div>
                 </div>
                 <div class="rebus-op">+</div>
                 <div class="rebus-item">
-                    <div class="rebus-symbol" style="font-family: 'Times New Roman', serif; font-style: italic;">X</div>
-                    <div class="rebus-hint">rzymska</div>
+                    <div class="roman-x">X</div>
                 </div>
             </div>
             <div class="input-group">
@@ -287,8 +203,8 @@
             <div class="rebus-label">Słowo 2</div>
             <div class="rebus-row">
                 <div class="rebus-item">
-                    <div class="rebus-symbol">🪆</div>
-                    <div class="rebus-hint">co to jest?</div>
+                    <div class="barbie-logo">Barbie</div>
+                    <div class="rebus-hint">po polsku, w liczbie mnogiej?</div>
                 </div>
             </div>
             <div class="input-group">
@@ -301,15 +217,13 @@
         <div class="error-msg" id="errorMsg"></div>
     </div>
 
-    <!-- Success overlay -->
+    <!-- Success overlay (replaces broken YouTube embed) -->
     <div class="success-overlay" id="successOverlay">
-        <div class="big-emoji">🎉</div>
-        <h2>Brawo!</h2>
-        <p>Prezent odblokowany!</p>
+        <div class="success-msg">🎉 Brawo! Odgadłaś!</div>
+        <div class="success-sub">Zaraz zobaczysz niespodziankę...</div>
     </div>
 
     <script>
-    // SHA-256 hashes (password not visible in source)
     const HASH_1 = 'ae851eaa05b559f247142f0d3b3b38e2302d6f81f1fa96344af59aede40eff22';
     const HASH_2 = '41815dbd24a2d33502be26ee3de537745bae0503b772bf1df56b33240e01ff6c';
 
@@ -324,14 +238,10 @@
         const w2 = document.getElementById('word2').value.trim().toLowerCase();
         const errEl = document.getElementById('errorMsg');
 
-        if (!w1 || !w2) {
-            errEl.textContent = 'Wpisz oba słowa!';
-            return;
-        }
+        if (!w1 || !w2) { errEl.textContent = 'Wpisz oba słowa!'; return; }
 
         const h1 = await sha256(w1);
         const h2 = await sha256(w2);
-
         const ok1 = h1 === HASH_1;
         const ok2 = h2 === HASH_2;
 
@@ -340,7 +250,22 @@
 
         if (ok1 && ok2) {
             errEl.textContent = '';
-            showSuccess();
+            spawnConfetti();
+
+            // Show success overlay after confetti
+            setTimeout(() => {
+                document.getElementById('successOverlay').classList.add('open');
+            }, 800);
+
+            // Open YouTube video in new tab (embed blocked by owner)
+            setTimeout(() => {
+                window.open('https://www.youtube.com/watch?v=wF5RuUPrdXg&t=0', '_blank');
+            }, 2000);
+
+            // Redirect to bingo
+            setTimeout(() => {
+                window.location.href = 'index.html';
+            }, 3000);
         } else {
             const wrong = [];
             if (!ok1) wrong.push('pierwsze');
@@ -349,16 +274,10 @@
         }
     }
 
-    function showSuccess() {
-        document.getElementById('successOverlay').classList.add('open');
-        spawnConfetti();
-        // Could redirect to bingo page here later:
-        // setTimeout(() => { window.location.href = 'index.html'; }, 3000);
-    }
-
+    // ===== CONFETTI =====
     function spawnConfetti() {
-        const colors = ['#f44336','#e91e63','#9c27b0','#2196f3','#4caf50','#ffeb3b','#ff9800','#f06292','#ba68c8'];
-        for (let i = 0; i < 80; i++) {
+        const colors = ['#f44336','#e91e63','#9c27b0','#2196f3','#4caf50','#ffeb3b','#ff9800','#e0218a','#ba68c8'];
+        for (let i = 0; i < 100; i++) {
             const el = document.createElement('div');
             el.className = 'confetti-piece';
             el.style.left = Math.random() * 100 + 'vw';
@@ -376,7 +295,7 @@
     document.querySelectorAll('input').forEach(input => {
         input.addEventListener('keydown', e => {
             if (e.key === 'Enter') checkAnswer();
-            input.className = ''; // reset error/success on typing
+            input.className = '';
         });
         input.addEventListener('input', () => {
             input.className = '';
