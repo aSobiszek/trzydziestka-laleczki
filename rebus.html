@@ -113,39 +113,22 @@
 
         .divider { width: 80px; height: 3px; background: linear-gradient(90deg, #d63384, #f06292); border-radius: 3px; margin: 24px auto; }
 
-        /* ===== SUCCESS OVERLAY ===== */
-        .success-overlay {
+        /* ===== VIDEO OVERLAY ===== */
+        .video-overlay {
             display: none;
             position: fixed;
             inset: 0;
-            background: rgba(0,0,0,0.85);
+            background: #000;
             z-index: 500;
             align-items: center;
             justify-content: center;
-            flex-direction: column;
-            gap: 20px;
+            transition: opacity 1s ease;
         }
-        .success-overlay.open { display: flex; }
-        .success-msg {
-            color: white;
-            font-family: 'Quicksand', sans-serif;
-            font-size: 1.6rem;
-            font-weight: 800;
-            text-align: center;
-            padding: 0 20px;
-            animation: fadeInUp 0.8s ease;
-        }
-        .success-sub {
-            color: rgba(255,255,255,0.7);
-            font-family: 'Quicksand', sans-serif;
-            font-size: 1rem;
-            font-weight: 600;
-            animation: fadeInUp 1.2s ease;
-        }
-
-        @keyframes fadeInUp {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
+        .video-overlay.open { display: flex; }
+        .video-overlay iframe {
+            width: 100vw;
+            height: 100vh;
+            border: none;
         }
 
         /* ===== CONFETTI ===== */
@@ -217,11 +200,8 @@
         <div class="error-msg" id="errorMsg"></div>
     </div>
 
-    <!-- Success overlay (replaces broken YouTube embed) -->
-    <div class="success-overlay" id="successOverlay">
-        <div class="success-msg">🎉 Brawo! Odgadłaś!</div>
-        <div class="success-sub">Zaraz zobaczysz niespodziankę...</div>
-    </div>
+    <!-- Video overlay -->
+    <div class="video-overlay" id="videoOverlay"></div>
 
     <script>
     const HASH_1 = 'ae851eaa05b559f247142f0d3b3b38e2302d6f81f1fa96344af59aede40eff22';
@@ -251,27 +231,33 @@
         if (ok1 && ok2) {
             errEl.textContent = '';
             spawnConfetti();
-
-            // Show success overlay after confetti
-            setTimeout(() => {
-                document.getElementById('successOverlay').classList.add('open');
-            }, 800);
-
-            // Open YouTube video in new tab (embed blocked by owner)
-            setTimeout(() => {
-                window.open('https://www.youtube.com/watch?v=wF5RuUPrdXg&t=0', '_blank');
-            }, 2000);
-
-            // Redirect to bingo
-            setTimeout(() => {
-                window.location.href = 'index.html';
-            }, 3000);
+            setTimeout(() => launchVideo(), 1500);
         } else {
             const wrong = [];
             if (!ok1) wrong.push('pierwsze');
             if (!ok2) wrong.push('drugie');
             errEl.textContent = 'Hmm, ' + wrong.join(' i ') + ' słowo nie pasuje... spróbuj jeszcze raz!';
         }
+    }
+
+    // ===== VIDEO =====
+    function launchVideo() {
+        const overlay = document.getElementById('videoOverlay');
+        overlay.classList.add('open');
+
+        // Standard YouTube embed (no JS API = no error 153)
+        overlay.innerHTML = '<iframe src="https://www.youtube.com/embed/wF5RuUPrdXg?si=d0fh_9mDFkqaL5_A&autoplay=1&start=0&end=24" title="YouTube video player" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>';
+
+        // Fade out from 20s to 24s (timer-based since no JS API control)
+        setTimeout(() => {
+            overlay.style.opacity = '0';
+        }, 20000);
+
+        // Redirect to bingo at 24s
+        setTimeout(() => {
+            overlay.style.display = 'none';
+            window.location.href = 'index.html';
+        }, 24000);
     }
 
     // ===== CONFETTI =====
