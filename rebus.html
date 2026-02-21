@@ -114,24 +114,41 @@
 
         .divider { width: 80px; height: 3px; background: linear-gradient(90deg, #d63384, #f06292); border-radius: 3px; margin: 24px auto; }
 
-        /* ===== VIDEO OVERLAY ===== */
-        .video-overlay {
+        /* ===== SUCCESS OVERLAY ===== */
+        .success-overlay {
             display: none;
             position: fixed;
             inset: 0;
-            background: #000;
+            background: linear-gradient(135deg, #ff9a9e 0%, #fecfef 50%, #fdfcfb 100%);
             z-index: 500;
+            flex-direction: column;
             align-items: center;
             justify-content: center;
-            transition: opacity 1s ease;
+            gap: 16px;
         }
-        .video-overlay.open { display: flex; }
-        .video-overlay iframe, .video-overlay > div {
-            width: 640px;
-            height: 390px;
-            max-width: 90vw;
-            max-height: 50vh;
-            border: none;
+        .success-overlay.open { display: flex; }
+        .success-emoji { font-size: 5rem; animation: bounceIn 0.6s ease; }
+        .success-title {
+            font-size: 2.2rem; font-weight: 800; color: #d63384;
+            animation: fadeInUp 0.6s ease 0.3s both;
+        }
+        .success-sub {
+            font-size: 1.1rem; font-weight: 600; color: #888;
+            animation: fadeInUp 0.6s ease 0.6s both;
+        }
+        .success-hint {
+            font-size: 0.85rem; font-weight: 600; color: #aaa;
+            animation: fadeInUp 0.6s ease 1.5s both;
+        }
+
+        @keyframes bounceIn {
+            0% { transform: scale(0); opacity: 0; }
+            60% { transform: scale(1.2); }
+            100% { transform: scale(1); opacity: 1; }
+        }
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
         /* ===== CONFETTI ===== */
@@ -203,18 +220,13 @@
         <div class="error-msg" id="errorMsg"></div>
     </div>
 
-    <!-- Video overlay with div placeholder (per official YT IFrame API docs) -->
-    <div class="video-overlay" id="videoOverlay">
-        <div id="ytPlayer"></div>
+    <!-- Success overlay -->
+    <div class="success-overlay" id="successOverlay">
+        <div class="success-emoji">🎉</div>
+        <div class="success-title">Brawo! Odgadłaś!</div>
+        <div class="success-sub">Masz filmik do obejrzenia...</div>
+        <div class="success-hint">Za chwilę przejdziesz do Bingo!</div>
     </div>
-
-    <!-- YouTube IFrame API (loaded async per docs) -->
-    <script>
-    var tag = document.createElement('script');
-    tag.src = "https://www.youtube.com/iframe_api";
-    var firstScriptTag = document.getElementsByTagName('script')[0];
-    firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
-    </script>
 
     <script>
     const HASH_1 = 'ae851eaa05b559f247142f0d3b3b38e2302d6f81f1fa96344af59aede40eff22';
@@ -244,7 +256,7 @@
         if (ok1 && ok2) {
             errEl.textContent = '';
             spawnConfetti();
-            setTimeout(() => launchVideo(), 1500);
+            setTimeout(() => showSuccess(), 1200);
         } else {
             const wrong = [];
             if (!ok1) wrong.push('pierwsze');
@@ -253,56 +265,19 @@
         }
     }
 
-    // ===== VIDEO (exact YouTube sample code pattern) =====
-    var player;
+    // ===== SUCCESS + VIDEO =====
+    function showSuccess() {
+        document.getElementById('successOverlay').classList.add('open');
 
-    function onYouTubeIframeAPIReady() {
-        // API ready, player created on demand
-    }
+        // Open video in new tab after 2s
+        setTimeout(function() {
+            window.open('https://www.youtube.com/watch?v=wF5RuUPrdXg', '_blank');
+        }, 2000);
 
-    function launchVideo() {
-        document.getElementById('videoOverlay').classList.add('open');
-
-        player = new YT.Player('ytPlayer', {
-            height: '390',
-            width: '640',
-            videoId: 'wF5RuUPrdXg',
-            playerVars: {
-                'playsinline': 1
-            },
-            events: {
-                'onReady': onPlayerReady,
-                'onStateChange': onPlayerStateChange,
-                'onError': onPlayerError
-            }
-        });
-    }
-
-    function onPlayerReady(event) {
-        event.target.playVideo();
-    }
-
-    var done = false;
-    function onPlayerStateChange(event) {
-        if (event.data == YT.PlayerState.PLAYING && !done) {
-            // Stop after 24 seconds, start fading at 20s
-            setTimeout(function() {
-                document.getElementById('videoOverlay').style.opacity = '0';
-            }, 20000);
-            setTimeout(function() {
-                player.stopVideo();
-                document.getElementById('videoOverlay').style.display = 'none';
-                window.location.href = 'index.html';
-            }, 24000);
-            done = true;
-        }
-    }
-
-    function onPlayerError(event) {
-        console.log('YT Error code:', event.data);
-        // Fallback: open in new tab
-        window.open('https://www.youtube.com/watch?v=wF5RuUPrdXg', '_blank');
-        setTimeout(function() { window.location.href = 'index.html'; }, 2000);
+        // Redirect to bingo after 5s
+        setTimeout(function() {
+            window.location.href = 'index.html';
+        }, 5000);
     }
 
     // ===== CONFETTI =====
