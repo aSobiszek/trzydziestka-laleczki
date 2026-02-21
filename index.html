@@ -13,9 +13,13 @@
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
 
-        html, body {
-            overscroll-behavior: none;
+        html {
             overflow-x: hidden;
+        }
+
+        body {
+            overflow-x: hidden;
+            overflow-y: auto;
         }
 
         body {
@@ -507,32 +511,55 @@
         'img/fb4c91fac4e3f10569c2cb47f53d01ff.JPEG',
     ];
 
-    // Randomized edge positions (left/right/top/bottom, avoiding center content)
+    // Grid-based edge placement: photos fill borders evenly, no overlaps
     function generatePhotoSpots(count) {
         const spots = [];
-        const zones = [
-            // LEFT column (x: 0-12%)
-            (i, total) => ({ top: (i / total * 85 + Math.random() * 8) + '%', left: (Math.random() * 10 + 1) + '%' }),
-            // RIGHT column (x: 88-100%)
-            (i, total) => ({ top: (i / total * 85 + Math.random() * 8) + '%', right: (Math.random() * 10 + 1) + '%' }),
-            // TOP row (y: 0-5%)
-            (i, total) => ({ top: (Math.random() * 4) + '%', left: (15 + Math.random() * 70) + '%' }),
-            // BOTTOM row (y: 85-98%)
-            (i, total) => ({ top: (85 + Math.random() * 12) + '%', left: (15 + Math.random() * 70) + '%' }),
-        ];
-        // Distribute: ~40% left, ~40% right, ~10% top, ~10% bottom
-        const distribution = [];
-        for (let i = 0; i < count; i++) {
-            if (i % 5 === 4) distribution.push(i < count / 2 ? 2 : 3); // top or bottom
-            else distribution.push(i % 2 === 0 ? 0 : 1); // left or right alternating
+        // Split photos into: left side, right side, top strip, bottom strip
+        const left = Math.ceil(count * 0.35);
+        const right = Math.ceil(count * 0.35);
+        const top = Math.ceil(count * 0.15);
+        const bottom = count - left - right - top;
+
+        // LEFT: evenly spaced vertically, x = 1-10%
+        for (let i = 0; i < left; i++) {
+            const yStep = 90 / left;
+            spots.push({
+                top: (i * yStep + Math.random() * yStep * 0.5) + '%',
+                left: (1 + Math.random() * 8) + '%',
+                rot: Math.random() * 24 - 12,
+                size: 120 + Math.random() * 50,
+            });
         }
-        distribution.forEach((zone, i) => {
-            const fn = zones[zone];
-            const pos = fn(i, count);
-            pos.rot = (Math.random() * 30 - 15); // random rotation -15 to +15
-            pos.size = 110 + Math.random() * 50; // random size 110-160px
-            spots.push(pos);
-        });
+        // RIGHT: evenly spaced vertically, x = right edge
+        for (let i = 0; i < right; i++) {
+            const yStep = 90 / right;
+            spots.push({
+                top: (i * yStep + Math.random() * yStep * 0.5) + '%',
+                right: (1 + Math.random() * 8) + '%',
+                rot: Math.random() * 24 - 12,
+                size: 120 + Math.random() * 50,
+            });
+        }
+        // TOP: spread across x, y = 0-3%
+        for (let i = 0; i < top; i++) {
+            const xStep = 60 / Math.max(top, 1);
+            spots.push({
+                top: (Math.random() * 3) + '%',
+                left: (20 + i * xStep + Math.random() * xStep * 0.5) + '%',
+                rot: Math.random() * 24 - 12,
+                size: 120 + Math.random() * 50,
+            });
+        }
+        // BOTTOM: spread across x, y = 88-97%
+        for (let i = 0; i < bottom; i++) {
+            const xStep = 60 / Math.max(bottom, 1);
+            spots.push({
+                top: (88 + Math.random() * 8) + '%',
+                left: (20 + i * xStep + Math.random() * xStep * 0.5) + '%',
+                rot: Math.random() * 24 - 12,
+                size: 120 + Math.random() * 50,
+            });
+        }
         return spots;
     }
 
