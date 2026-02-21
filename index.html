@@ -26,7 +26,8 @@
             font-family: 'Quicksand', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
             min-height: 100vh;
             background: linear-gradient(135deg, #ff9a9e 0%, #fecfef 50%, #fdfcfb 100%);
-            padding: 16px 12px 40px;
+            padding: 30px 12px 120px;
+            position: relative;
             -webkit-tap-highlight-color: transparent;
         }
 
@@ -36,10 +37,9 @@
             top: 0;
             left: 0;
             right: 0;
-            min-height: 100%;
+            bottom: 0;
             z-index: 0;
             pointer-events: none;
-            overflow: hidden;
         }
 
         .bg-photo {
@@ -511,56 +511,64 @@
         'img/fb4c91fac4e3f10569c2cb47f53d01ff.JPEG',
     ];
 
-    // Grid-based edge placement: photos fill borders evenly, no overlaps
-    function generatePhotoSpots(count) {
-        const spots = [];
-        // Split photos into: left side, right side, top strip, bottom strip
-        const left = Math.ceil(count * 0.35);
-        const right = Math.ceil(count * 0.35);
-        const top = Math.ceil(count * 0.15);
-        const bottom = count - left - right - top;
+    // Place photos around edges: left, right columns + top/bottom rows
+    // Photos use px positions calculated from actual page dimensions
+    function placePhotos(wall, photos) {
+        const pageW = document.body.scrollWidth;
+        const pageH = document.body.scrollHeight;
+        const photoSize = Math.max(120, Math.min(160, pageW * 0.1));
+        // Content zone (where NOT to place photo centers): ~12.5% to ~87.5% horizontally
+        const contentLeft = pageW * 0.12;
+        const contentRight = pageW * 0.88;
 
-        // LEFT: evenly spaced vertically, x = 1-10%
-        for (let i = 0; i < left; i++) {
-            const yStep = 90 / left;
-            spots.push({
-                top: (i * yStep + Math.random() * yStep * 0.5) + '%',
-                left: (1 + Math.random() * 8) + '%',
-                rot: Math.random() * 24 - 12,
-                size: 120 + Math.random() * 50,
-            });
+        // Shuffle
+        const shuffled = [...photos].sort(() => Math.random() - 0.5);
+
+        // Distribute: 7 left, 7 right, 3 top, 3 bottom
+        const leftCount = 7;
+        const rightCount = 7;
+        const topCount = 3;
+        const bottomCount = Math.max(0, shuffled.length - leftCount - rightCount - topCount);
+        let idx = 0;
+
+        // LEFT column: spread from top to bottom
+        for (let i = 0; i < leftCount && idx < shuffled.length; i++, idx++) {
+            const ySpacing = (pageH - photoSize) / leftCount;
+            const y = i * ySpacing + Math.random() * ySpacing * 0.4;
+            const x = Math.random() * (contentLeft - photoSize * 0.3);
+            addPhoto(wall, shuffled[idx], x, y, photoSize);
         }
-        // RIGHT: evenly spaced vertically, x = right edge
-        for (let i = 0; i < right; i++) {
-            const yStep = 90 / right;
-            spots.push({
-                top: (i * yStep + Math.random() * yStep * 0.5) + '%',
-                right: (1 + Math.random() * 8) + '%',
-                rot: Math.random() * 24 - 12,
-                size: 120 + Math.random() * 50,
-            });
+        // RIGHT column
+        for (let i = 0; i < rightCount && idx < shuffled.length; i++, idx++) {
+            const ySpacing = (pageH - photoSize) / rightCount;
+            const y = i * ySpacing + Math.random() * ySpacing * 0.4;
+            const x = contentRight + Math.random() * (pageW - contentRight - photoSize * 0.7);
+            addPhoto(wall, shuffled[idx], x, y, photoSize);
         }
-        // TOP: spread across x, y = 0-3%
-        for (let i = 0; i < top; i++) {
-            const xStep = 60 / Math.max(top, 1);
-            spots.push({
-                top: (Math.random() * 3) + '%',
-                left: (20 + i * xStep + Math.random() * xStep * 0.5) + '%',
-                rot: Math.random() * 24 - 12,
-                size: 120 + Math.random() * 50,
-            });
+        // TOP row: spread across content zone
+        for (let i = 0; i < topCount && idx < shuffled.length; i++, idx++) {
+            const xSpacing = (contentRight - contentLeft) / topCount;
+            const x = contentLeft + i * xSpacing + Math.random() * xSpacing * 0.5;
+            const y = Math.random() * 10;
+            addPhoto(wall, shuffled[idx], x, y, photoSize);
         }
-        // BOTTOM: spread across x, y = 88-97%
-        for (let i = 0; i < bottom; i++) {
-            const xStep = 60 / Math.max(bottom, 1);
-            spots.push({
-                top: (88 + Math.random() * 8) + '%',
-                left: (20 + i * xStep + Math.random() * xStep * 0.5) + '%',
-                rot: Math.random() * 24 - 12,
-                size: 120 + Math.random() * 50,
-            });
+        // BOTTOM row: below content
+        for (let i = 0; i < bottomCount && idx < shuffled.length; i++, idx++) {
+            const xSpacing = (contentRight - contentLeft) / Math.max(bottomCount, 1);
+            const x = contentLeft + i * xSpacing + Math.random() * xSpacing * 0.5;
+            const y = pageH - photoSize - 30 - Math.random() * 40;
+            addPhoto(wall, shuffled[idx], x, y, photoSize);
         }
-        return spots;
+    }
+
+    function addPhoto(wall, src, x, y, size) {
+        const s = size + Math.random() * 30 - 15;
+        const rot = (Math.random() * 24 - 12).toFixed(1);
+        const div = document.createElement('div');
+        div.className = 'bg-photo';
+        div.style.cssText = 'left:' + x.toFixed(0) + 'px;top:' + y.toFixed(0) + 'px;width:' + s.toFixed(0) + 'px;transform:rotate(' + rot + 'deg);--rot:' + rot + 'deg;animation-delay:' + (Math.random()*6).toFixed(1) + 's;animation-duration:' + (6+Math.random()*5).toFixed(1) + 's';
+        div.innerHTML = '<img src="' + src + '" alt="">';
+        wall.appendChild(div);
     }
 
     // ===== BINGO ITEMS (16) =====
@@ -800,23 +808,9 @@
     function renderPhotoWall() {
         if (BG_PHOTOS.length === 0) return;
         const wall = document.getElementById('photoWall');
-        const spots = generatePhotoSpots(BG_PHOTOS.length);
-        // Shuffle photos for variety
-        const shuffled = [...BG_PHOTOS].sort(() => Math.random() - 0.5);
-        shuffled.forEach((src, i) => {
-            const spot = spots[i];
-            const div = document.createElement('div');
-            div.className = 'bg-photo';
-            div.style.setProperty('--rot', spot.rot.toFixed(1) + 'deg');
-            div.style.top = spot.top;
-            if (spot.left) div.style.left = spot.left;
-            if (spot.right) div.style.right = spot.right;
-            div.style.width = spot.size + 'px';
-            div.style.transform = 'rotate(' + spot.rot.toFixed(1) + 'deg)';
-            div.style.animationDelay = (Math.random() * 6) + 's';
-            div.style.animationDuration = (6 + Math.random() * 5) + 's';
-            div.innerHTML = '<img src="' + src + '" alt="">';
-            wall.appendChild(div);
+        // Wait for layout to settle, then place photos based on actual dimensions
+        requestAnimationFrame(() => {
+            placePhotos(wall, BG_PHOTOS);
         });
     }
 
