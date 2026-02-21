@@ -65,8 +65,16 @@
         .container {
             position: relative;
             z-index: 1;
-            max-width: 480px;
+            max-width: 75%;
             margin: 0 auto;
+        }
+
+        @media (max-width: 600px) {
+            .container { max-width: 92%; }
+        }
+
+        @media (min-width: 1024px) {
+            .container { max-width: 560px; }
         }
 
         /* ===== HEADER ===== */
@@ -474,12 +482,19 @@
     // ===== BACKGROUND PHOTOS CONFIG =====
     // Put her photos in img/ folder, then list filenames here:
     const BG_PHOTOS = [
-        // 'img/1.jpg',
-        // 'img/2.jpg',
-        // 'img/3.jpg',
-        // 'img/4.jpg',
-        // 'img/5.jpg',
-        // 'img/6.jpg',
+        'img/IMG_0121.jpg',
+        'img/IMG_0428.jpg',
+        'img/IMG_0502.jpg',
+        'img/IMG_0956.jpg',
+        'img/IMG_2748.jpg',
+        'img/IMG_3156.jpg',
+        'img/IMG_7636.jpg',
+        'img/IMG_8533.jpg',
+        'img/IMG_9023.jpg',
+        'img/IMG_9338.jpg',
+        'img/IMG_9942.jpg',
+        'img/49f1b61dd2d43c3f09043a076d021beb.JPEG',
+        'img/fb4c91fac4e3f10569c2cb47f53d01ff.JPEG',
     ];
 
     // Photo positions (scattered around edges, polaroid style)
@@ -494,6 +509,9 @@
         { top: '78%', right: '-3%', rot: -8 },
         { top: '15%', left: '25%',  rot: -18 },
         { top: '62%', right: '20%', rot: 14 },
+        { top: '40%', left: '30%', rot: -10 },
+        { top: '88%', left: '-3%', rot: 8 },
+        { top: '92%', right: '-2%', rot: -13 },
     ];
 
     // ===== BINGO ITEMS (16) =====
