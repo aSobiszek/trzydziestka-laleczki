@@ -519,27 +519,26 @@
         const baseSize = 9; // vw
 
         // No top row - keep header clear
-        // Split all photos between left, right, and bottom
-        const leftCount = 8;
-        const rightCount = 8;
-        const bottomCount = Math.max(0, shuffled.length - leftCount - rightCount);
+        // 3 zigzag lanes per side: edge, mid, deep
+        const perSide = 9;
+        const bottomCount = Math.max(0, shuffled.length - perSide * 2);
         let idx = 0;
 
-        // LEFT column: wide zigzag (odd shifted 4-6vw right toward center)
-        for (let i = 0; i < leftCount && idx < shuffled.length; i++, idx++) {
-            const yStep = 90 / leftCount;
-            const y = (i * yStep + Math.random() * yStep * 0.3 + 5);
-            const zigzag = (i % 2 === 0) ? 0.5 : 5;
-            const x = zigzag + Math.random() * 1.5;
-            addPhoto(wall, shuffled[idx], x, y, baseSize);
+        // LEFT side: 3-position zigzag (0vw, 5vw, 10vw from left)
+        for (let i = 0; i < perSide && idx < shuffled.length; i++, idx++) {
+            const yStep = 88 / perSide;
+            const y = (i * yStep + Math.random() * yStep * 0.3 + 4);
+            const lane = i % 3;
+            const x = (lane === 0) ? 0.5 : (lane === 1) ? 5.5 : 10.5;
+            addPhoto(wall, shuffled[idx], x + Math.random() * 1.5, y, baseSize);
         }
-        // RIGHT column: wide zigzag (odd shifted 4-6vw left toward center)
-        for (let i = 0; i < rightCount && idx < shuffled.length; i++, idx++) {
-            const yStep = 90 / rightCount;
-            const y = (i * yStep + Math.random() * yStep * 0.3 + 5);
-            const zigzag = (i % 2 === 0) ? 0.5 : 5;
-            const x = zigzag + Math.random() * 1.5;
-            addPhotoRight(wall, shuffled[idx], x, y, baseSize);
+        // RIGHT side: 3-position zigzag
+        for (let i = 0; i < perSide && idx < shuffled.length; i++, idx++) {
+            const yStep = 88 / perSide;
+            const y = (i * yStep + Math.random() * yStep * 0.3 + 4);
+            const lane = i % 3;
+            const x = (lane === 0) ? 0.5 : (lane === 1) ? 5.5 : 10.5;
+            addPhotoRight(wall, shuffled[idx], x + Math.random() * 1.5, y, baseSize);
         }
         // BOTTOM row
         for (let i = 0; i < bottomCount && idx < shuffled.length; i++, idx++) {
