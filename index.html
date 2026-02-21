@@ -28,8 +28,11 @@
 
         /* ===== PHOTO WALL ===== */
         .photo-wall {
-            position: fixed;
-            inset: 0;
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            min-height: 100%;
             z-index: 0;
             pointer-events: none;
             overflow: hidden;
@@ -41,7 +44,7 @@
             background: white;
             padding: 5px 5px 20px;
             box-shadow: 0 4px 20px rgba(0,0,0,0.12);
-            opacity: 0.5;
+            opacity: 0.65;
             animation: photo-float 8s ease-in-out infinite;
         }
 
@@ -483,36 +486,55 @@
     // Put her photos in img/ folder, then list filenames here:
     const BG_PHOTOS = [
         'img/IMG_0121.jpg',
+        'img/IMG_0154.jpg',
         'img/IMG_0428.jpg',
         'img/IMG_0502.jpg',
         'img/IMG_0956.jpg',
+        'img/IMG_1189.jpg',
         'img/IMG_2748.jpg',
         'img/IMG_3156.jpg',
         'img/IMG_7636.jpg',
+        'img/IMG_8507.jpg',
         'img/IMG_8533.jpg',
+        'img/IMG_8671.jpg',
+        'img/IMG_8692.jpg',
         'img/IMG_9023.jpg',
+        'img/IMG_9150.jpg',
         'img/IMG_9338.jpg',
+        'img/IMG_9515.jpg',
         'img/IMG_9942.jpg',
         'img/49f1b61dd2d43c3f09043a076d021beb.JPEG',
         'img/fb4c91fac4e3f10569c2cb47f53d01ff.JPEG',
     ];
 
-    // Photo positions (scattered around edges, polaroid style)
-    const PHOTO_SPOTS = [
-        { top: '1%',  left: '2%',   rot: -14 },
-        { top: '4%',  right: '3%',  rot: 10 },
-        { top: '18%', left: '5%',   rot: -7 },
-        { top: '22%', right: '4%',  rot: 16 },
-        { top: '36%', left: '3%',   rot: 6 },
-        { top: '40%', right: '5%',  rot: -11 },
-        { top: '54%', left: '4%',   rot: 12 },
-        { top: '58%', right: '3%',  rot: -8 },
-        { top: '72%', left: '5%',   rot: -10 },
-        { top: '76%', right: '4%',  rot: 14 },
-        { top: '10%', left: '35%',  rot: -18 },
-        { top: '50%', right: '30%', rot: 8 },
-        { top: '88%', left: '30%',  rot: -13 },
-    ];
+    // Randomized edge positions (left/right/top/bottom, avoiding center content)
+    function generatePhotoSpots(count) {
+        const spots = [];
+        const zones = [
+            // LEFT column (x: 0-12%)
+            (i, total) => ({ top: (i / total * 85 + Math.random() * 8) + '%', left: (Math.random() * 10 + 1) + '%' }),
+            // RIGHT column (x: 88-100%)
+            (i, total) => ({ top: (i / total * 85 + Math.random() * 8) + '%', right: (Math.random() * 10 + 1) + '%' }),
+            // TOP row (y: 0-5%)
+            (i, total) => ({ top: (Math.random() * 4) + '%', left: (15 + Math.random() * 70) + '%' }),
+            // BOTTOM row (y: 85-98%)
+            (i, total) => ({ top: (85 + Math.random() * 12) + '%', left: (15 + Math.random() * 70) + '%' }),
+        ];
+        // Distribute: ~40% left, ~40% right, ~10% top, ~10% bottom
+        const distribution = [];
+        for (let i = 0; i < count; i++) {
+            if (i % 5 === 4) distribution.push(i < count / 2 ? 2 : 3); // top or bottom
+            else distribution.push(i % 2 === 0 ? 0 : 1); // left or right alternating
+        }
+        distribution.forEach((zone, i) => {
+            const fn = zones[zone];
+            const pos = fn(i, count);
+            pos.rot = (Math.random() * 30 - 15); // random rotation -15 to +15
+            pos.size = 110 + Math.random() * 50; // random size 110-160px
+            spots.push(pos);
+        });
+        return spots;
+    }
 
     // ===== BINGO ITEMS (16) =====
     const ITEMS = [
@@ -751,16 +773,21 @@
     function renderPhotoWall() {
         if (BG_PHOTOS.length === 0) return;
         const wall = document.getElementById('photoWall');
-        BG_PHOTOS.forEach((src, i) => {
-            const spot = PHOTO_SPOTS[i % PHOTO_SPOTS.length];
+        const spots = generatePhotoSpots(BG_PHOTOS.length);
+        // Shuffle photos for variety
+        const shuffled = [...BG_PHOTOS].sort(() => Math.random() - 0.5);
+        shuffled.forEach((src, i) => {
+            const spot = spots[i];
             const div = document.createElement('div');
             div.className = 'bg-photo';
-            div.style.setProperty('--rot', spot.rot + 'deg');
+            div.style.setProperty('--rot', spot.rot.toFixed(1) + 'deg');
             div.style.top = spot.top;
             if (spot.left) div.style.left = spot.left;
             if (spot.right) div.style.right = spot.right;
-            div.style.transform = 'rotate(' + spot.rot + 'deg)';
-            div.style.animationDelay = (i * 0.8) + 's';
+            div.style.width = spot.size + 'px';
+            div.style.transform = 'rotate(' + spot.rot.toFixed(1) + 'deg)';
+            div.style.animationDelay = (Math.random() * 6) + 's';
+            div.style.animationDuration = (6 + Math.random() * 5) + 's';
             div.innerHTML = '<img src="' + src + '" alt="">';
             wall.appendChild(div);
         });
