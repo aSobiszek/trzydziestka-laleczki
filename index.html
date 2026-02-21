@@ -48,7 +48,7 @@
             background: white;
             padding: 5px 5px 20px;
             box-shadow: 0 4px 20px rgba(0,0,0,0.12);
-            opacity: 0.65;
+            opacity: 0.75;
             animation: photo-float 8s ease-in-out infinite;
         }
 
@@ -511,62 +511,76 @@
         'img/fb4c91fac4e3f10569c2cb47f53d01ff.JPEG',
     ];
 
-    // Place photos around edges: left, right columns + top/bottom rows
-    // Photos use px positions calculated from actual page dimensions
+    // Responsive photo placement using % units + zigzag pattern
     function placePhotos(wall, photos) {
-        const pageW = document.body.scrollWidth;
-        const pageH = document.body.scrollHeight;
-        const photoSize = Math.max(120, Math.min(160, pageW * 0.1));
-        // Content zone (where NOT to place photo centers): ~12.5% to ~87.5% horizontally
-        const contentLeft = pageW * 0.12;
-        const contentRight = pageW * 0.88;
-
-        // Shuffle
         const shuffled = [...photos].sort(() => Math.random() - 0.5);
 
-        // Distribute: 7 left, 7 right, 3 top, 3 bottom
+        // Size in vw units so they scale with viewport
+        const baseSize = 9; // vw
+
         const leftCount = 7;
         const rightCount = 7;
         const topCount = 3;
         const bottomCount = Math.max(0, shuffled.length - leftCount - rightCount - topCount);
         let idx = 0;
 
-        // LEFT column: spread from top to bottom
+        // LEFT column: zigzag pattern (odd photos shifted 2-4% right)
         for (let i = 0; i < leftCount && idx < shuffled.length; i++, idx++) {
-            const ySpacing = (pageH - photoSize) / leftCount;
-            const y = i * ySpacing + Math.random() * ySpacing * 0.4;
-            const x = Math.random() * (contentLeft - photoSize * 0.3);
-            addPhoto(wall, shuffled[idx], x, y, photoSize);
+            const yStep = 88 / leftCount;
+            const y = (i * yStep + Math.random() * yStep * 0.3 + 1);
+            const zigzag = (i % 2 === 0) ? 1 : 3.5;
+            const x = zigzag + Math.random() * 2;
+            addPhoto(wall, shuffled[idx], x, y, baseSize);
         }
-        // RIGHT column
+        // RIGHT column: zigzag (odd shifted left)
         for (let i = 0; i < rightCount && idx < shuffled.length; i++, idx++) {
-            const ySpacing = (pageH - photoSize) / rightCount;
-            const y = i * ySpacing + Math.random() * ySpacing * 0.4;
-            const x = contentRight + Math.random() * (pageW - contentRight - photoSize * 0.7);
-            addPhoto(wall, shuffled[idx], x, y, photoSize);
+            const yStep = 88 / rightCount;
+            const y = (i * yStep + Math.random() * yStep * 0.3 + 1);
+            const zigzag = (i % 2 === 0) ? 1 : 3.5;
+            const x = zigzag + Math.random() * 2;
+            addPhotoRight(wall, shuffled[idx], x, y, baseSize);
         }
-        // TOP row: spread across content zone
+        // TOP row
         for (let i = 0; i < topCount && idx < shuffled.length; i++, idx++) {
-            const xSpacing = (contentRight - contentLeft) / topCount;
-            const x = contentLeft + i * xSpacing + Math.random() * xSpacing * 0.5;
-            const y = Math.random() * 10;
-            addPhoto(wall, shuffled[idx], x, y, photoSize);
+            const xStep = 50 / topCount;
+            const x = 18 + i * xStep + Math.random() * xStep * 0.4;
+            const y = Math.random() * 2;
+            addPhoto(wall, shuffled[idx], x, y, baseSize);
         }
-        // BOTTOM row: below content
+        // BOTTOM row
         for (let i = 0; i < bottomCount && idx < shuffled.length; i++, idx++) {
-            const xSpacing = (contentRight - contentLeft) / Math.max(bottomCount, 1);
-            const x = contentLeft + i * xSpacing + Math.random() * xSpacing * 0.5;
-            const y = pageH - photoSize - 30 - Math.random() * 40;
-            addPhoto(wall, shuffled[idx], x, y, photoSize);
+            const xStep = 50 / Math.max(bottomCount, 1);
+            const x = 18 + i * xStep + Math.random() * xStep * 0.4;
+            addPhotoBottom(wall, shuffled[idx], x, baseSize);
         }
     }
 
-    function addPhoto(wall, src, x, y, size) {
-        const s = size + Math.random() * 30 - 15;
+    function addPhoto(wall, src, xVw, yPct, sizeVw) {
+        const s = sizeVw + (Math.random() * 2 - 1);
         const rot = (Math.random() * 24 - 12).toFixed(1);
         const div = document.createElement('div');
         div.className = 'bg-photo';
-        div.style.cssText = 'left:' + x.toFixed(0) + 'px;top:' + y.toFixed(0) + 'px;width:' + s.toFixed(0) + 'px;transform:rotate(' + rot + 'deg);--rot:' + rot + 'deg;animation-delay:' + (Math.random()*6).toFixed(1) + 's;animation-duration:' + (6+Math.random()*5).toFixed(1) + 's';
+        div.style.cssText = 'left:' + xVw.toFixed(1) + 'vw;top:' + yPct.toFixed(1) + '%;width:' + s.toFixed(1) + 'vw;transform:rotate(' + rot + 'deg);--rot:' + rot + 'deg;animation-delay:' + (Math.random()*6).toFixed(1) + 's;animation-duration:' + (6+Math.random()*5).toFixed(1) + 's';
+        div.innerHTML = '<img src="' + src + '" alt="">';
+        wall.appendChild(div);
+    }
+
+    function addPhotoRight(wall, src, rightVw, yPct, sizeVw) {
+        const s = sizeVw + (Math.random() * 2 - 1);
+        const rot = (Math.random() * 24 - 12).toFixed(1);
+        const div = document.createElement('div');
+        div.className = 'bg-photo';
+        div.style.cssText = 'right:' + rightVw.toFixed(1) + 'vw;top:' + yPct.toFixed(1) + '%;width:' + s.toFixed(1) + 'vw;transform:rotate(' + rot + 'deg);--rot:' + rot + 'deg;animation-delay:' + (Math.random()*6).toFixed(1) + 's;animation-duration:' + (6+Math.random()*5).toFixed(1) + 's';
+        div.innerHTML = '<img src="' + src + '" alt="">';
+        wall.appendChild(div);
+    }
+
+    function addPhotoBottom(wall, src, xVw, sizeVw) {
+        const s = sizeVw + (Math.random() * 2 - 1);
+        const rot = (Math.random() * 24 - 12).toFixed(1);
+        const div = document.createElement('div');
+        div.className = 'bg-photo';
+        div.style.cssText = 'left:' + xVw.toFixed(1) + 'vw;bottom:10px;width:' + s.toFixed(1) + 'vw;transform:rotate(' + rot + 'deg);--rot:' + rot + 'deg;animation-delay:' + (Math.random()*6).toFixed(1) + 's;animation-duration:' + (6+Math.random()*5).toFixed(1) + 's';
         div.innerHTML = '<img src="' + src + '" alt="">';
         wall.appendChild(div);
     }
